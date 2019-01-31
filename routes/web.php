@@ -11,11 +11,9 @@
 |
 */
 
-Route::get('/admin', function () {
-    return view('login');
-});
 
 
-Route::post('/login', 'LoginController@login');
 
 Route::get('/', 'HomeController@index');
+
+Route::post('/','HomeController@cal');

@@ -11,14 +11,18 @@
     <title>POS</title>
 
     <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}" defer></script>
+{{--<script src="{{ asset('js/app.js') }}" defer></script>--}}
 
-    <!-- Fonts -->
+<!-- Fonts -->
     <link rel="dns-prefetch" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet" type="text/css">
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <script
+        src="https://code.jquery.com/jquery-3.3.1.js"
+        integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+        crossorigin="anonymous"></script>
 </head>
 <style>
     form {
@@ -65,7 +69,7 @@
         padding: 0px;
     }
 
-    input#number {
+    input.number {
         text-align: center;
         border: none;
         border-top: 1px solid #ddd;
@@ -112,61 +116,99 @@
     <div class="container">
         <main class="py-4">
 
-            <h4>SET</h4>
 
-            <table class="table table-bordered">
-                <thead class="thead-dark">
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Items</th>
-                    <th scope="col">Quantity</th>
-                    <th>Price</th>
-                </tr>
-                </thead>
-                <tbody>
+            <form method="post">
 
-                @php
-                    $i=1;
-                @endphp
-                @foreach($result as $re)
-                    <tr>
-                        <th>{{ $i }}</th>
-                        <th scope="row">
-                            {!!  $re->name !!}
-                        </th>
-                        <th>
-                            <ul>
-                                @foreach($sets as $set)
-                                    @foreach($set->items as $item)
-                                        @if($re->sid == $item->set_id)
-                                            <li>
-                                                {{ $item->name }}
-                                            </li>
-                                        @endif
-                                    @endforeach
-                                @endforeach
-                            </ul>
-                        </th>
-                        <th scope="row">
-                            <form>
-                                <div class="value-button" id="decrease" onclick="decreaseValue()" value="Decrease Value">-</div>
-                                <input type="number" id="number" value="0" />
-                                <div class="value-button" id="increase" onclick="increaseValue()" value="Increase Value">+</div>
-                            </form>
-                        </th>
-                        <th scope="row">
-                            {{ $re->price }}.00
-                        </th>
-                    </tr>
-                    @php
-                        $i++;
-                    @endphp
-                @endforeach
+                <div class="row">
 
+                    <div class="col">
+                        <h4 class="py-4">SET</h4>
+                        @foreach($sets as $set)
 
-                </tbody>
-            </table>
+                            <div class="row col form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="setname[<?php echo $set->name ?>]" value="{{ $set->name }}"
+                                       id="defaultCheck1">
+                                <label class="form-check-label" for="defaultCheck1">
+                                    {{ $set->name }}
+                                </label>
+                            </div>
+                            <div class="value-button decrease" data-id="<?php echo $set->id ?>" value="Decrease Value">-
+                            </div>
+                            <input type="number" name="setname[<?php echo $set->name ?>][]" class="number" id="<?php echo $set->id ?>number"
+                                   value="0"/>
+                            <div class="value-button increase" data-id="<?php echo $set->id ?>" value="Increase Value">+
+                            </div>
+
+                        @endforeach
+                    </div>
+
+                    <div class="col">
+                        <h4 class="py-4">Items</h4>
+                        @foreach($items as $item)
+
+                            <div class="row col  mx-1  form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="itemname[<?php echo $item->name?>]"
+                                       value="{{ $item->name }}"
+                                       id="defaultCheck1">
+                                <label class="form-check-label" for="defaultCheck1">
+                                    {{ $item->name }}
+                                </label>
+                            </div>
+                            <div class="value-button decrease_item" data-id="<?php echo $item->id ?>"
+                                 value="Decrease Value">-
+                            </div>
+                            <input type="number" name="itemname[<?php echo $item->name?>][]" class="number"
+                                   id="<?php echo $item->id ?>itemcount"
+                                   value="0"/>
+                            <div class="value-button increase_item" data-id="<?php echo $item->id ?>"
+                                 value="Increase Value">+
+                            </div>
+
+                        @endforeach
+                    </div>
+
+                    <div class="col">
+                        <h4 class="py-4">Extras</h4>
+                        @foreach($extras as $extra)
+
+                            <div class="row col  mx-1  form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="extraname[<?php echo $extra->name?>]"
+                                       value="{{ $extra->name }}"
+                                       id="defaultCheck1">
+                                <label class="form-check-label" for="defaultCheck1">
+                                    {{ $extra->name }}
+                                </label>
+                            </div>
+                            <div class="value-button decrease_extra" data-id="<?php echo $extra->id ?>"
+                                 value="Decrease Value">-
+                            </div>
+                            <input type="number" name="extraname[<?php echo $extra->name?>][]" class="number"
+                                   id="<?php echo $extra->id ?>extracount"
+                                   value="0"/>
+                            <div class="value-button increase_extra" data-id="<?php echo $extra->id ?>"
+                                 value="Increase Value">+
+                            </div>
+
+                        @endforeach
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="discount" id="exampleRadios1"
+                               value="discount">
+                        <label class="form-check-label" for="exampleRadios1">
+                            Discount
+                        </label>
+                    </div>
+                </div>
+
+                <div class="row py-4">
+                    <button type="submit" class="btn btn-lg btn-block btn-primary">Add</button>
+                </div>
+
+            </form>
 
 
         </main>
@@ -174,21 +216,67 @@
     </div>
 </div>
 
+
 <script>
-    function increaseValue() {
-        var value = parseInt(document.getElementById('number').value, 10);
+
+    $('.increase').on('click', function () {
+        // alert(456)
+        // alert($(this).attr('data-id')+'number');
+        var value = parseInt(document.getElementById($(this).attr('data-id') + 'number').value, 10);
         value = isNaN(value) ? 0 : value;
         value++;
-        document.getElementById('number').value = value;
-    }
+        console.log(value);
+        document.getElementById($(this).attr('data-id') + 'number').value = value;
+    });
 
-    function decreaseValue() {
-        var value = parseInt(document.getElementById('number').value, 10);
+
+    $('.decrease').on('click', function () {
+        var value = parseInt(document.getElementById($(this).attr('data-id') + 'number').value, 10);
         value = isNaN(value) ? 0 : value;
         value < 1 ? value = 1 : '';
         value--;
-        document.getElementById('number').value = value;
-    }
+        document.getElementById($(this).attr('data-id') + 'number').value = value;
+
+    });
+
+    $('.increase_item').on('click', function () {
+
+        var value = parseInt(document.getElementById($(this).attr('data-id') + 'itemcount').value, 10);
+        value = isNaN(value) ? 0 : value;
+        value++;
+        console.log(value);
+        document.getElementById($(this).attr('data-id') + 'itemcount').value = value;
+    });
+
+
+    $('.decrease_item').on('click', function () {
+        var value = parseInt(document.getElementById($(this).attr('data-id') + 'itemcount').value, 10);
+        value = isNaN(value) ? 0 : value;
+        value < 1 ? value = 1 : '';
+        value--;
+        document.getElementById($(this).attr('data-id') + 'itemcount').value = value;
+
+    });
+
+    $('.increase_extra').on('click', function () {
+
+        var value = parseInt(document.getElementById($(this).attr('data-id') + 'extracount').value, 10);
+        value = isNaN(value) ? 0 : value;
+        value++;
+        console.log(value);
+        document.getElementById($(this).attr('data-id') + 'extracount').value = value;
+    });
+
+
+    $('.decrease_extra').on('click', function () {
+        var value = parseInt(document.getElementById($(this).attr('data-id') + 'extracount').value, 10);
+        value = isNaN(value) ? 0 : value;
+        value < 1 ? value = 1 : '';
+        value--;
+        document.getElementById($(this).attr('data-id') + 'extracount').value = value;
+
+    });
+
 </script>
 </body>
 </html>
