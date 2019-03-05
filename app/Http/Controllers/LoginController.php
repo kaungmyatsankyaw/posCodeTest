@@ -13,8 +13,13 @@ class LoginController extends Controller
         $password = $request->get('password');
 
         if (Auth::attempt(['name' => $username, 'password' => $password])) {
-            return redirect('/');
+            return redirect('/admin');
         }
-
     }
+
+    public function logout(){
+//        Auth::logout();
+        return redirect('/');
+    }
+
 }

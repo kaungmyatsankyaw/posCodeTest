@@ -12,8 +12,18 @@
 */
 
 
-
-
 Route::get('/', 'HomeController@index');
 
-Route::post('/','HomeController@cal');
+//Route::post('/','HomeController@cal');
+
+Route::post('/cash', 'HomeController@cash');
+
+Route::get('/login', function () {
+    return view('login');
+});
+
+Route::post('/login', 'LoginController@login');
+
+Route::get('/admin','AdminController@index');
+
+Route::post('/logout','LoginController@logout');
